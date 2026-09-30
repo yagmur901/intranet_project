@@ -1,0 +1,386 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="space-y-6 max-w-7xl mx-auto">
+    
+    <!-- Karşılama Afişi -->
+    <div class="bg-gradient-to-r from-red-800 to-red-600 p-8 rounded-xl shadow-lg border border-red-200 flex items-center justify-between text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-16 -mt-16 opacity-10">
+            <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.83L18.17 19H5.83L12 5.83z"></path></svg>
+        </div>
+        
+        <div class="relative z-10">
+            <h1 class="text-3xl font-extrabold tracking-tight">Merhaba, {{ request.user.username }}.</h1>
+            <p class="text-red-100 mt-2 font-medium">Kurumsal intranete hoş geldin. İşte platformdaki güncel özetler:</p>
+        </div>
+        <div class="text-right hidden sm:block relative z-10">
+            <span class="text-sm font-bold text-red-800 bg-white px-4 py-1.5 rounded-full shadow-sm">
+                Aktif Oturum
+            </span>
+        </div>
+    </div>
+
+    <!-- Hızlı İşlemler -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        
+        {% if settings.show_tickets %}
+        <a href="{% url 'ticket_create' %}" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-red-300 hover:shadow-md transition flex items-center gap-4 group">
+            <div class="bg-red-50 p-3 rounded-lg text-red-600 group-hover:bg-red-600 group-hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-800 text-sm">Destek İste</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Yeni IT Bileti</p>
+            </div>
+        </a>
+        {% endif %}
+
+        {% if settings.show_employees != False %}
+        <a href="/employees" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-red-300 hover:shadow-md transition flex items-center gap-4 group">
+            <div class="bg-red-50 p-3 rounded-lg text-red-600 group-hover:bg-red-600 group-hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-800 text-sm">Personel Bul</h3>
+                <p class="text-xs text-gray-400 mt-0.5">İletişim Rehberi</p>
+            </div>
+        </a>
+        {% endif %}
+
+        {% if settings.show_documents %}
+        <a href="{% url 'document_list' %}" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-red-300 hover:shadow-md transition flex items-center gap-4 group">
+            <div class="bg-red-50 p-3 rounded-lg text-red-600 group-hover:bg-red-600 group-hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-800 text-sm">Dokümanlar</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Form ve Şablonlar</p>
+            </div>
+        </a>
+        {% endif %}
+
+        {% if settings.show_workspaces != False %}
+        <a href="{% url 'workspace_list' %}" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-red-300 hover:shadow-md transition flex items-center gap-4 group">
+            <div class="bg-red-50 p-3 rounded-lg text-red-600 group-hover:bg-red-600 group-hover:text-white transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            </div>
+            <div>
+                <h3 class="font-bold text-gray-800 text-sm">Çalışma Alanı</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Ortak Projeler</p>
+            </div>
+        </a>
+        {% endif %}
+
+    </div>
+
+    <!-- Ana İçerik Izgarası -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Sol Sütun -->
+        <!-- Dinamik Genişlik = Sağ sütunda hiçbir şey yoksa burası tam ekran olur -->
+        <div class="{% if settings.show_weather or settings.show_calendar or settings.show_feedback or settings.show_tickets %}md:col-span-2{% else %}md:col-span-3{% endif %} flex flex-col gap-6">
+            
+            <!-- Hızlı Bağlantılar -->
+            {% if settings.show_quick_links %}
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-50">
+                    <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
+                        🔗 Hızlı Bağlantılar
+                    </h3>
+                </div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <a href="#" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border border-gray-100 hover:border-red-300 hover:bg-red-50 hover:shadow-sm transition group">
+                        <span class="text-2xl mb-2 group-hover:scale-110 transition transform">🌐</span>
+                        <span class="text-xs font-bold text-gray-700 group-hover:text-red-700 text-center">Kurumsal Portal</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border border-gray-100 hover:border-red-300 hover:bg-red-50 hover:shadow-sm transition group">
+                        <span class="text-2xl mb-2 group-hover:scale-110 transition transform">📱</span>
+                        <span class="text-xs font-bold text-gray-700 group-hover:text-red-700 text-center">Dijital Platform</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border border-gray-100 hover:border-red-300 hover:bg-red-50 hover:shadow-sm transition group">
+                        <span class="text-2xl mb-2 group-hover:scale-110 transition transform">✉️</span>
+                        <span class="text-xs font-bold text-gray-700 group-hover:text-red-700 text-center">Webmail</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border border-gray-100 hover:border-red-300 hover:bg-red-50 hover:shadow-sm transition group">
+                        <span class="text-2xl mb-2 group-hover:scale-110 transition transform">📊</span>
+                        <span class="text-xs font-bold text-gray-700 group-hover:text-red-700 text-center">İnsan Kaynakları</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Ayın Eğitim Programı -->
+            {% if settings.show_training and active_training %}
+                <div class="bg-gradient-to-br from-red-50 to-white p-5 rounded-lg shadow-md border border-red-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">🎓 Ayın Eğitim Programı</h3>
+                        <span class="text-[10px] bg-red-100 text-red-600 font-extrabold px-2 py-0.5 rounded animate-pulse">Yeni</span>
+                    </div>
+                    <div class="bg-white rounded border border-gray-100 p-3 hover:border-red-300 transition">
+                        <h4 class="font-bold text-gray-800 text-sm mb-1">{{ active_training.title }}</h4>
+                        <p class="text-xs text-gray-500 mb-3">{{ active_training.description }}</p>
+                        <a href="{{ active_training.url }}" target="_blank" class="flex items-center justify-center gap-1 w-full text-xs font-bold text-white bg-red-600 hover:bg-red-700 py-2 rounded transition shadow-sm">
+                            Eğitime Git &rarr;
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Güncel Duyurular -->
+            {% if settings.show_announcements %}
+            <!-- flex-grow ve min-h-[300px] ile kutunun esnemesini garantilenir -->
+            <div class="bg-white rounded-lg shadow-md flex flex-col flex-grow min-h-[300px]">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center shrink-0">
+                    <h2 class="text-xl font-bold text-gray-800">Güncel Duyurular</h2>
+                    <a href="/announcements/" class="text-red-600 hover:text-red-800 font-semibold text-sm transition">
+                        Tümünü Gör &rarr;
+                    </a>
+                </div>
+                
+                <!-- min-h-0 ve overflow-y-auto kombinasyonu, kutu taştığında scrollbar çıkarır -->
+                <div class="p-6 flex-grow min-h-0 overflow-y-auto custom-scrollbar">
+                    <ul class="space-y-4">
+                        {% for announcement in announcements %}
+                            <li class="border-b border-gray-50 pb-3 last:border-0 last:pb-0">
+                                <a href="/announcements/{{ announcement.id }}/" class="font-semibold text-red-600 hover:underline text-base block mb-1">
+                                    {{ announcement.title }}
+                                </a>
+                                <p class="text-gray-600 text-sm mb-1">{{ announcement.content|truncatechars:120 }}</p>
+                                <span class="text-xs text-gray-400">Son Güncelleme: {{ announcement.updated_at|date:"d M Y H:i" }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="text-gray-500 text-center py-4 text-sm">Henüz yayınlanmış bir duyuru bulunmamaktadır.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Son Dokümanlar -->
+            {% if settings.show_documents %}
+            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-100">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-50">
+                    <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                        Son Dokümanlar
+                    </h3>
+                    <a href="{% url 'document_list' %}" class="text-[10px] font-bold text-gray-400 hover:text-red-600">Tüm Dosyalar</a>
+                </div>
+
+                <ul class="space-y-3">
+                    {% for document in recent_documents %}
+                    <li class="flex items-center justify-between text-sm hover:bg-gray-50 p-2 rounded transition">
+                        <span class="text-gray-700 font-medium truncate">{{ document.title }}</span>
+                        <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded">{{ document.file_extension }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="text-sm text-gray-400 py-2">Henüz yüklenmiş bir doküman yok.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Sağ Sütun -->
+        <!-- Sadece en az 1 modül açıksa bu sütunu renderla -->
+        {% if settings.show_weather or settings.show_calendar or settings.show_feedback or settings.show_tickets %}
+        <div class="md:col-span-1 flex flex-col gap-6">
+            
+            <!-- Hava Durumu -->
+            {% if settings.show_weather %}
+            <div class="bg-gradient-to-br from-red-700 to-red-950 p-6 rounded-lg shadow-lg text-white">
+                <div class="flex justify-between items-start border-b border-red-500/50 pb-3 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold">Ankara</h2>
+                        <p class="text-xs text-red-200" id="live-date">Yükleniyor...</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="live-clock" class="text-xl font-mono font-extrabold bg-red-900/60 px-2 py-1 rounded border border-red-400/30">--:--:--</span>
+                    </div>
+                </div>
+
+                {% if weather %}
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <p class="text-5xl font-extrabold tracking-tight">{{ weather.temp }}°C</p>
+                            <p class="text-red-200 mt-1 text-xs"><span class="font-semibold">AQI:</span> {{ weather.aqi }}</p>
+                        </div>
+                        <svg class="w-14 h-14 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-xs bg-red-800/40 p-3 rounded-lg border border-red-400/20">
+                        <div>
+                            <span class="text-red-300 block text-[10px] uppercase tracking-wider">Nem</span>
+                            <span class="font-bold text-sm">%{{ weather.humidity }}</span>
+                        </div>
+                        <div>
+                            <span class="text-red-300 block text-[10px] uppercase tracking-wider">Rüzgar</span>
+                            <span class="font-bold text-sm">{{ weather.wind }} km/s</span>
+                        </div>
+                        <div>
+                            <span class="text-red-300 block text-[10px] uppercase tracking-wider">UV Endeksi</span>
+                            <span class="font-bold text-sm">{{ weather.uv }}</span>
+                        </div>
+                        <div>
+                            <span class="text-red-300 block text-[10px] uppercase tracking-wider">Polen</span>
+                            <span class="font-bold text-sm">{{ weather.pollen }} g/m³</span>
+                        </div>
+                        <div>
+                            <span class="text-red-300 block text-[10px] uppercase tracking-wider">Gün Doğumu</span>
+                            <span class="font-semibold">{{ weather.sunrise }}</span>
+                        </div>
+                        <div>
+                            <span class="text-red-300 block text-[10px] uppercase tracking-wider">Gün Batımı</span>
+                            <span class="font-semibold">{{ weather.sunset }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 pt-3 border-t border-red-500/40 flex justify-between items-center text-xs">
+                        <span class="text-red-200">Açık Hava Koşusu:</span>
+                        <span class="font-bold text-white">{{ weather.run_cond }}</span>
+                    </div>
+                {% else %}
+                    <p class="text-sm text-red-200">Hava durumu verisi şu an alınamıyor.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Mini Takvim -->
+            {% if settings.show_calendar %}
+            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-100 flex flex-col flex-grow">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-gray-800 text-sm">{{ current_month_name }} {{ current_year }}</h3>
+                    <a href="{% url 'event_calendar' %}" class="text-[11px] text-red-600 bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-full font-semibold transition border border-red-200 inline-flex items-center gap-1">
+                        Etkinlik Takvimi &rarr;
+                    </a>
+                </div>
+
+                <div class="text-center text-xs mb-4 flex-grow">
+                    <div class="grid grid-cols-7 gap-1 font-semibold text-gray-400 mb-2 text-[11px]">
+                        <span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span>
+                    </div>
+                    <div class="space-y-1">
+                        {% for week in calendar_weeks %}
+                        <div class="grid grid-cols-7 gap-1">
+                            {% for item in week %}
+                                {% if item.day == 0 %}
+                                    <div class="h-7"></div>
+                                {% else %}
+                                    <a href="{% url 'event_calendar' %}?date={{ current_year }}-{{ current_month }}-{{ item.day }}" 
+                                       class="h-7 flex items-center justify-center relative rounded-md text-xs transition
+                                        {% if item.is_today %}bg-red-600 text-white font-bold shadow-sm hover:bg-red-700{% elif item.has_event %}bg-amber-100 text-amber-900 font-bold border border-amber-300 hover:bg-amber-200{% else %}text-gray-700 hover:bg-gray-100{% endif %}">
+                                        {{ item.day }}
+                                        {% if item.has_event and not item.is_today %}
+                                            <span class="absolute bottom-0.5 w-1 h-1 bg-amber-600 rounded-full"></span>
+                                        {% endif %}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="flex items-center justify-end gap-3 mt-2 text-[10px] text-gray-500">
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-red-600 inline-block"></span> Bugün</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-amber-200 border border-amber-400 inline-block"></span> Etkinlik Var</span>
+                    </div>
+                </div>
+
+                <div class="border-t pt-3 mt-auto">
+                    <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Yaklaşan Etkinlik</h4>
+                    {% for event in events %}
+                    <div class="p-2.5 rounded-md bg-gray-50 border border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-semibold text-gray-800">{{ event.title }}</span>
+                            <span class="text-[10px] font-mono text-red-600 bg-red-100 px-1.5 py-0.5 rounded">
+                                {{ event.start_date|date:"d M H:i" }}
+                            </span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-gray-400 text-center py-2">Planlanmış etkinlik bulunmuyor.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Geri Bildirim -->
+            {% if settings.show_feedback %}
+            <div class="bg-gradient-to-br from-red-50 to-white p-4 rounded-lg shadow border border-red-100">
+                <div class="flex items-center gap-3">
+                    <div class="bg-red-100 p-2.5 rounded-lg text-red-600 flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-xs text-gray-800">Geri Bildirim & Öneri</h5>
+                        <p class="text-[10px] text-gray-500 mt-0.5">İntraneti geliştirmemiz için fikirlerini paylaş.</p>
+                    </div>
+                </div>
+                <a href="#" class="mt-4 block text-center text-xs font-bold text-red-600 bg-white border border-red-200 hover:bg-red-50 py-1.5 rounded transition shadow-2xs">
+                    Görüş Bildir &rarr;
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Açık Destek Talepleri -->
+            {% if settings.show_tickets %}
+            <div class="bg-white p-5 rounded-lg shadow-md border border-gray-100">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-50">
+                    <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                        Son Destek Taleplerim
+                    </h3>
+                    <a href="{% url 'ticket_list' %}" class="text-[10px] font-bold text-gray-400 hover:text-red-600">Tümü</a>
+                </div>
+                
+                <ul class="space-y-3">
+                    {% for ticket in recent_tickets %}
+                    <li class="flex items-center justify-between text-sm hover:bg-gray-50 p-2 rounded transition border border-transparent hover:border-gray-100">
+                        <a href="{% url 'ticket_detail' ticket.id %}" class="text-gray-700 font-medium truncate hover:text-red-600 transition block w-3/4">
+                            {{ ticket.title }}
+                        </a>
+                        <div class="w-1/4 text-right">
+                            {% if ticket.status == 'acik' or ticket.status == 'Açık' %}
+                                <span class="text-[10px] bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded">Açık</span>
+                            {% elif ticket.status == 'islemde' or ticket.status == 'İşlemde' %}
+                                <span class="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded">İşlemde</span>
+                            {% else %}
+                                <span class="text-[10px] bg-gray-100 text-gray-600 font-bold px-2 py-0.5 rounded">Kapalı</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="text-sm text-gray-400 py-2 text-center">Henüz bir destek talebiniz bulunmuyor.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const clockEl = document.getElementById('live-clock');
+        if (clockEl) {
+            clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        const dateEl = document.getElementById('live-date');
+        if (dateEl) {
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            dateEl.textContent = now.toLocaleDateString('tr-TR', options);
+        }
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
+{% endblock %}

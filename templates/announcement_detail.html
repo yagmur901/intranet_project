@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto">
+    <div class="mb-6 border-b pb-4">
+        <h2 class="text-3xl font-bold text-gray-800">{{ announcement.title }}</h2>
+        <div class="text-sm text-gray-500 mt-2">
+            Yayınlanma: {{ announcement.created_at|date:"d M Y H:i" }} | 
+            Son Güncelleme: {{ announcement.updated_at|date:"d M Y H:i" }}
+        </div>
+    </div>
+    
+    <div class="text-gray-700 leading-relaxed whitespace-pre-wrap">
+        {{ announcement.content }}
+    </div>
+
+    <div class="mt-8 pt-4 border-t">
+        <a href="javascript:history.back()" class="text-red-600 hover:text-red-800 font-semibold transition">
+            &larr; Geri Dön
+        </a>
+    </div>
+</div>
+{% endblock %}

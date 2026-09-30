@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-md p-6 border border-gray-100 max-w-5xl mx-auto">
+    
+    <!-- Mesaj Gösterim Alanı -->
+    {% if messages %}
+        <div id="alert-box" class="mb-6 space-y-2">            {% for message in messages %}
+                <div class="p-3 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    ✅ {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">IT Destek Taleplerim</h2>
+            <p class="text-sm text-gray-500 mt-1">Geçmiş destek kayıtlarınızı buradan takip edebilirsiniz.</p>
+        </div>
+        
+        <!-- Yeni Talep Oluştur -->
+        <a href="{% url 'ticket_create' %}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition inline-flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Yeni Talep Oluştur
+        </a>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
+                    <th class="p-3 font-semibold rounded-tl-lg">Durum</th>
+                    <th class="p-3 font-semibold">Öncelik</th>
+                    <th class="p-3 font-semibold">Sorun Başlığı</th>
+                    <th class="p-3 font-semibold rounded-tr-lg">Tarih</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for ticket in tickets %}
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                    <td class="p-3">
+                        {% if ticket.status == 'acik' %}
+                            <span class="bg-green-100 text-green-700 px-2.5 py-1 rounded-md text-xs font-bold">Açık</span>
+                        {% elif ticket.status == 'islemde' %}
+                            <span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-md text-xs font-bold">İşlemde</span>
+                        {% else %}
+                            <span class="bg-gray-200 text-gray-600 px-2.5 py-1 rounded-md text-xs font-bold">Kapalı</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-3">
+                        {% if ticket.priority == 'acil' %}
+                            <span class="text-red-600 font-bold flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-red-600"></span> Acil
+                            </span>
+                        {% elif ticket.priority == 'normal' %}
+                            <span class="text-gray-700 font-semibold flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-red-400"></span> Normal
+                            </span>
+                        {% else %}
+                            <span class="text-gray-500 flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-gray-400"></span> Düşük
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="p-3 font-medium">
+                        <a href="{% url 'ticket_detail' ticket.id %}" class="text-red-600 hover:text-red-800 hover:underline transition">
+                            {{ ticket.title }}
+                        </a>
+                    </td>
+                    <td class="p-3 text-gray-500">{{ ticket.created_at|date:"d M Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-8 text-center text-gray-500 bg-gray-50/50 rounded-b-lg">
+                        <svg class="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Henüz oluşturduğunuz bir destek talebi bulunmuyor.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    setTimeout(function() {
+        let alertBox = document.getElementById('alert-box');
+        if (alertBox) {
+            alertBox.style.transition = "opacity 0.5s ease";
+            alertBox.style.opacity = "0"; // Yavaşça şeffaf yap
+            setTimeout(() => alertBox.remove(), 500); // Yarım saniye sonra sayfadan tamamen sil
+        }
+    }, 4000); // 4000 = 4 saniye bekle
+</script>
+
+{% endblock %}

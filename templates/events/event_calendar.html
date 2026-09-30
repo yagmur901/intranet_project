@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-md border border-gray-100 p-6 space-y-6">
+    
+    <!-- Takvim Üst Kontrol Barı -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-100 pb-5">
+        
+        <!-- Sol Üst: Tıklanıp Değiştirilebilir Ay ve Yıl Seçicisi -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+            <form method="GET" action="{% url 'event_calendar' %}" class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-xl border border-gray-200">
+                <!-- Ay Seçimi -->
+                <select name="month" onchange="this.form.submit()" 
+                        class="bg-white font-extrabold text-lg sm:text-2xl text-gray-900 border-none rounded-lg focus:ring-2 focus:ring-red-500 py-1 px-2 cursor-pointer shadow-xs">
+                    {% for m_num, m_name in turkish_months %}
+                        <option value="{{ m_num }}" {% if m_num == current_month %}selected{% endif %}>
+                            {{ m_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Yıl Seçimi -->
+                <select name="year" onchange="this.form.submit()" 
+                        class="bg-white font-extrabold text-lg sm:text-2xl text-red-600 border-none rounded-lg focus:ring-2 focus:ring-red-500 py-1 px-2 cursor-pointer shadow-xs">
+                    {% for y in years_range %}
+                        <option value="{{ y }}" {% if y == current_year %}selected{% endif %}>
+                            {{ y }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <!-- Sağ Üst: Yeni Etkinlik Ekle & Ay Değiştirme Butonları -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <!-- YENİ: Etkinlik Ekle Butonu -->
+            <a href="{% url 'event_add' %}" 
+               class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition shadow-sm border border-red-700 mr-2">
+                <i class="fa-solid fa-plus"></i>
+                <span class="hidden sm:inline">Yeni Etkinlik Ekle</span>
+                <span class="sm:hidden">Ekle</span>
+            </a>
+
+            <!-- Bugün Butonu -->
+            <a href="{% url 'event_calendar' %}?year={{ today_year }}&month={{ today_month }}" 
+               class="px-3 py-2 text-xs font-semibold rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition shadow-2xs">
+                Bugün
+            </a>
+            
+            <!-- Önceki Ay -->
+            <a href="{% url 'event_calendar' %}?year={{ prev_year }}&month={{ prev_month }}" 
+               class="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition shadow-2xs" title="Önceki Ay">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </a>
+            
+            <!-- Sonraki Ay -->
+            <a href="{% url 'event_calendar' %}?year={{ next_year }}&month={{ next_month }}" 
+               class="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition shadow-2xs" title="Sonraki Ay">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Hafta Günleri Başlığı -->
+    <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden border border-gray-200">
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Pzt</div>
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Sal</div>
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Çar</div>
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Per</div>
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Cum</div>
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Cts</div>
+        <div class="bg-gray-50 py-2.5 text-center text-[10px] sm:text-xs font-bold text-gray-600 uppercase">Paz</div>
+
+        <!-- Gün Hücreleri -->
+        {% for week in calendar_weeks %}
+            {% for item in week %}
+            
+                {% if item.day == 0 %}
+                    <div class="bg-gray-50/60 min-h-[100px] sm:min-h-[115px] p-1 sm:p-2"></div>
+                {% else %}
+                    <a href="{% url 'event_calendar' %}?date={{ current_year }}-{{ current_month }}-{{ item.day }}" 
+                    class="bg-white min-h-[100px] sm:min-h-[115px] p-1 sm:p-2 flex flex-col justify-between hover:bg-gray-50 transition relative group block text-left {% if item.is_today %}ring-2 ring-red-600 ring-inset{% endif %}">
+                        
+                        <!-- Gün Numarası -->
+                        <div class="flex justify-between items-center pointer-events-none">
+                            <span class="text-xs sm:text-sm font-bold {% if item.is_today %}w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs{% else %}text-gray-700{% endif %}">
+                                {{ item.day }}
+                            </span>
+                            {% if item.events %}
+                                <span class="text-[9px] sm:text-[10px] font-semibold text-gray-400 font-mono hidden sm:inline">{{ item.events|length }} kayıt</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- O Güne Ait Etkinlikler -->
+                        <div class="mt-2 space-y-1 overflow-y-auto max-h-[75px] sm:max-h-[85px] custom-scrollbar">
+                            {% for ev in item.events %}
+                                <!-- Kurumsal vs Kişisel Renk Ayrımı -->
+                                <div class="p-1 sm:p-1.5 rounded text-[9px] sm:text-xs border flex flex-col gap-0.5 transition shadow-2xs 
+                                    {% if ev.is_corporate %}
+                                        bg-red-50 border-red-200 text-red-900
+                                    {% else %}
+                                        bg-blue-50 border-blue-200 text-blue-900
+                                    {% endif %}"
+                                    title="{{ ev.title }} ({{ ev.location|default:'Konum yok' }})">
+                                    <span class="font-bold truncate">{{ ev.title }}</span>
+                                    <span class="text-[8px] sm:text-[10px] font-mono opacity-80 truncate">
+                                        <i class="fa-regular fa-clock mr-0.5"></i>{{ ev.start_date|date:"H:i" }} 
+                                        {% if not ev.is_corporate %}<i class="fa-solid fa-lock ml-1 text-gray-400" title="Sadece size özel"></i>{% endif %}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </a>
+                {% endif %}
+
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <!-- Alt Bilgi / Legend -->
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 border-t pt-4">
+        <div class="flex flex-wrap items-center gap-4 justify-center">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span> Bugün</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-red-100 border border-red-300 inline-block"></span> Kurumsal Etkinlik</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-blue-100 border border-blue-300 inline-block"></span> Kişisel Etkinliğim</span>
+        </div>
+        <a href="/" class="text-red-600 hover:underline font-semibold">&larr; Anasayfaya Dön</a>
+    </div>
+</div>
+
+<style>
+    /* Kaydırma çubuğu gizleme/inceltme */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e5e7eb; 
+        border-radius: 4px;
+    }
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+        background: #d1d5db; 
+    }
+</style>
+{% endblock %}

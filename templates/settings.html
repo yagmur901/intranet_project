@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+        <h1 class="text-2xl font-extrabold text-gray-900 mb-2">Ayarlar</h1>
+        <p class="text-sm text-gray-500 mb-6 border-b pb-4">Hesap güvenlik tercihlerinizi bu alandan yönetebilirsiniz.</p>
+
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Şifre Değiştir</h2>
+        
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                    <p class="text-xs text-gray-400 mt-1">{{ field.help_text|safe }}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p class="text-xs text-red-600 mt-1 font-semibold">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            
+            <div class="pt-4">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition shadow-sm">
+                    Şifreyi Güncelle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Django form inputları için Tailwind stilleri */
+    form input[type="password"] {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    form input[type="password"]:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 1px #ef4444;
+    }
+    form ul.errorlist {
+        display: none; /* Django'nun varsayılan liste stilini gizleme, üstte manuel basıldı */
+    }
+</style>
+{% endblock %}

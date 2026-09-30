@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Tüm Duyurular</h2>
+    
+    <ul class="space-y-4">
+        <!-- Döngü announcements yerine page_obj üzerinden -->
+        {% for announcement in page_obj %}
+            <li class="border-b pb-3">
+
+                <a href="/announcements/{{ announcement.id }}/" class="font-semibold text-lg text-red-700 hover:underline">
+                    {{ announcement.title }}
+                </a>
+
+                <p class="text-gray-600 text-sm mt-1">{{ announcement.content|truncatechars:120 }}</p>
+
+                <span class="text-xs text-gray-400">Yayınlanma: {{ announcement.created_at|date:"d M Y" }}</span>
+            </li>
+        {% empty %}
+            <li class="text-gray-500">Duyuru bulunamadı.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Sayfalama Butonları -->
+    <div class="mt-6 flex justify-between items-center text-sm">
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">&larr; Önceki</a>
+            {% else %}
+                <!-- Önceki sayfa yoksa butonu pasif ve soluk göster -->
+                <span class="bg-gray-300 text-gray-500 px-4 py-2 rounded cursor-not-allowed">&larr; Önceki</span>
+            {% endif %}
+        </div>
+
+        <span class="font-semibold text-gray-600">
+            Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+        </span>
+
+        <div>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Sonraki &rarr;</a>
+            {% else %}
+                <span class="bg-gray-300 text-gray-500 px-4 py-2 rounded cursor-not-allowed">Sonraki &rarr;</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

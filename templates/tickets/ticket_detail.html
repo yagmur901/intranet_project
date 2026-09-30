@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+    <!-- Üst Başlık Alanı -->
+    <div class="bg-gray-50 border-b border-gray-100 p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Talep #{{ ticket.id }}</div>
+            <h2 class="text-xl font-bold text-gray-800">{{ ticket.title }}</h2>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{% url 'ticket_list' %}" class="text-sm font-semibold text-gray-600 bg-white border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition">
+                &larr; Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <!-- Detaylar Alanı -->
+    <div class="p-6 space-y-6">
+        <div class="flex flex-wrap gap-4 text-sm">
+            <div class="bg-gray-50 border border-gray-100 px-4 py-2 rounded-lg">
+                <span class="text-gray-500 block text-xs font-semibold mb-1">Durum</span>
+                {% if ticket.status == 'acik' %}
+                    <span class="text-green-700 font-bold">Açık</span>
+                {% elif ticket.status == 'islemde' %}
+                    <span class="text-red-700 font-bold">İşlemde</span>
+                {% else %}
+                    <span class="text-gray-600 font-bold">Kapalı</span>
+                {% endif %}
+            </div>
+
+            <div class="bg-gray-50 border border-gray-100 px-4 py-2 rounded-lg">
+                <span class="text-gray-500 block text-xs font-semibold mb-1">Öncelik</span>
+                <span class="font-bold text-gray-800 capitalize">{{ ticket.priority }}</span>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-100 px-4 py-2 rounded-lg">
+                <span class="text-gray-500 block text-xs font-semibold mb-1">Oluşturulma Tarihi</span>
+                <span class="font-bold text-gray-800">{{ ticket.created_at|date:"d M Y H:i" }}</span>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-sm font-bold text-gray-800 mb-2 border-b pb-2">Sorun Açıklaması</h3>
+            <p class="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">{{ ticket.description }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

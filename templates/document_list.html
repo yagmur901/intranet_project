@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Üst Başlık & Arama -->
+    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-extrabold text-gray-900">Doküman Merkezi</h1>
+            <p class="text-xs text-gray-500 mt-1">Şirket prosedürleri, İK formları ve kurumsal kılavuzlar</p>
+        </div>
+
+        <!-- Arama Kutusu -->
+        <form method="GET" action="{% url 'document_list' %}" class="w-full md:w-80 flex items-center gap-2">
+            {% if selected_cat_id %}
+                <input type="hidden" name="category" value="{{ selected_cat_id }}">
+            {% endif %}
+            <div class="relative w-full">
+                <input type="text" name="q" value="{{ query }}" placeholder="Belge ara..." 
+                       class="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-sm font-semibold rounded-lg transition">Ara</button>
+        </form>
+    </div>
+
+    <!-- Kategori Filtre Butonları -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2">
+        <a href="{% url 'document_list' %}{% if query %}?q={{ query }}{% endif %}" 
+           class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition {% if not selected_cat_id and not selected_doc_id %}bg-red-600 text-white shadow-sm{% else %}bg-white text-gray-600 hover:bg-gray-100 border border-gray-200{% endif %}">
+            Tümü
+        </a>
+        {% for cat in categories %}
+        <a href="{% url 'document_list' %}?category={{ cat.id }}{% if query %}&q={{ query }}{% endif %}" 
+           class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition {% if selected_cat_id == cat.id|stringformat:'s' %}bg-red-600 text-white shadow-sm{% else %}bg-white text-gray-600 hover:bg-gray-100 border border-gray-200{% endif %}">
+            {{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Tekil Doküman Filtresi Uyarısı -->
+    {% if selected_doc_id %}
+    <div class="p-4 bg-red-50 border border-red-200 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3 text-sm text-red-800 shadow-sm">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-filter text-red-600"></i>
+            <span>Arama sonuçlarından seçtiğiniz doküman görüntüleniyor.</span>
+        </div>
+        <a href="{% url 'document_list' %}" class="px-3 py-1.5 bg-white hover:bg-red-600 hover:text-white text-red-700 border border-red-200 rounded-lg font-bold text-xs transition shadow-sm whitespace-nowrap">
+            Tüm Dokümanları Göster &times;
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Doküman Kartları Izgarası -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for doc in documents %}
+        <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md border {% if selected_doc_id %}border-red-300 ring-2 ring-red-100{% else %}border-gray-100{% endif %} flex flex-col justify-between transition group">
+            <div>
+                <!-- Üst Rozetler -->
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-[11px] font-semibold text-red-700 bg-red-50 px-2.5 py-0.5 rounded-md border border-red-100">
+                        {{ doc.category.name }}
+                    </span>
+                    <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded
+                        {% if doc.file_extension == 'pdf' %}bg-red-50 text-red-600 border border-red-200
+                        {% elif doc.file_extension == 'docx' or doc.file_extension == 'doc' %}bg-red-50 text-red-600 border border-red-200
+                        {% elif doc.file_extension == 'xlsx' or doc.file_extension == 'xls' %}bg-green-50 text-green-600 border border-green-200
+                        {% else %}bg-gray-100 text-gray-700{% endif %}">
+                        {{ doc.file_extension }}
+                    </span>
+                </div>
+
+                <!-- Başlık & Açıklama -->
+                <h3 class="font-bold text-gray-800 text-base group-hover:text-red-600 transition">{{ doc.title }}</h3>
+                <p class="text-xs text-gray-500 mt-2 line-clamp-2">{{ doc.description|default:"Açıklama bulunmuyor." }}</p>
+            </div>
+
+            <!-- Boyut, Tarih ve İndir Butonu -->
+            <div class="border-t border-gray-100 pt-3 mt-4 flex items-center justify-between text-xs text-gray-400">
+                <span>{{ doc.file_size }} • {{ doc.created_at|date:"d M Y" }}</span>
+                <a href="{{ doc.file.url }}" download target="_blank" 
+                   class="inline-flex items-center gap-1 bg-gray-50 hover:bg-red-600 hover:text-white text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 transition font-semibold">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    İndir
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white p-12 text-center rounded-xl border border-gray-100">
+            <p class="text-gray-500 text-sm">Seçili kriterlere uygun doküman bulunamadı.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

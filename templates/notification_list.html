@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-4">
+    <!-- Başlık ve Aksiyon Alanı -->
+    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Bildirim Merkezi</h2>
+            <p class="text-sm text-gray-500 mt-1">Sistemdeki tüm hareketleriniz ve uyarılarınız.</p>
+        </div>
+        <form method="POST" action="{% url 'notifications:mark_all_as_read' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition text-sm font-semibold shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-check-double text-blue-600"></i> Tümünü Okundu İşaretle
+            </button>
+        </form>
+    </div>
+
+    <!-- Bildirim Listesi -->
+    <ul class="divide-y divide-gray-100">
+        {% for notification in notifications %}
+            <!-- Tüm satırı kapsayan tıklanabilir liste elemanı -->
+            <li class="relative transition hover:bg-gray-50 group {% if not notification.is_read %}bg-blue-50/40{% endif %}">
+                <a href="{% url 'notifications:read_and_redirect' notification.id %}" class="flex gap-4 p-5 w-full cursor-pointer">
+                    
+                    <!-- Durum İkonu -->
+                    <div class="mt-1 flex-shrink-0">
+                        {% if not notification.is_read %}
+                            <div class="h-3 w-3 bg-blue-600 rounded-full shadow-sm ring-4 ring-blue-100"></div>
+                        {% else %}
+                            <div class="h-3 w-3 bg-gray-300 rounded-full"></div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- İçerik -->
+                    <div class="flex-grow">
+                        <h3 class="text-base font-semibold {% if not notification.is_read %}text-gray-900{% else %}text-gray-700{% endif %} group-hover:text-red-700 transition">
+                            {{ notification.title }}
+                        </h3>
+                        {% if notification.message %}
+                            <p class="text-sm text-gray-600 mt-1">{{ notification.message }}</p>
+                        {% endif %}
+                        <p class="text-xs text-gray-400 mt-2 flex items-center gap-1.5">
+                            <i class="fa-regular fa-clock"></i> {{ notification.created_at|date:"d M Y, H:i" }}
+                        </p>
+                    </div>
+                </a>
+            </li>
+        {% empty %}
+            <!-- Boş Durum -->
+            <li class="p-16 text-center text-gray-500">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                    <i class="fa-regular fa-bell-slash text-2xl text-gray-400"></i>
+                </div>
+                <p class="text-lg font-medium text-gray-800">Bildirim kutunuz tertemiz</p>
+                <p class="text-sm mt-1 text-gray-500">Şu an için gösterilecek bir sistem hareketiniz bulunmuyor.</p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

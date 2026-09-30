@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Personel Rehberi</h2>
+    
+    <!-- Arama ve Filtreleme Formu -->
+    <form method="GET" action="{% url 'employee_list' %}" class="mb-6 flex flex-col md:flex-row gap-4 bg-gray-50 p-4 rounded-lg border">
+        <!-- Arama Çubuğu -->
+        <div class="flex-grow">
+            <input type="text" name="q" value="{{ query }}" placeholder="İsim, departman veya e-posta ile ara..." 
+                   class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+        </div>
+        
+        <!-- Departman Filtresi -->
+        <div>
+            <select name="department" class="px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-red-500 text-sm">
+                <option value="">Tüm Departmanlar</option>
+                
+                {% for dept in departments %}
+                    <option value="{{ dept }}" {% if request.GET.department == dept %}selected{% endif %}>
+                        {{ dept }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition font-semibold text-sm">
+            Filtrele
+        </button>
+        
+        <!-- Filtreleri Temizle Butonu -->
+        {% if query or selected_dep %}
+        <a href="{% url 'employee_list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 transition text-center text-sm">
+            Temizle
+        </a>
+        {% endif %}
+    </form>
+
+    <!-- Personel Tablosu -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-red-800 text-white text-sm">
+                    <th class="p-3 border-b font-semibold">Ad</th>
+                    <th class="p-3 border-b font-semibold">Soyad</th>
+                    <th class="p-3 border-b font-semibold">Kısa İsim</th>
+                    <th class="p-3 border-b font-semibold">Departman</th>
+                    <th class="p-3 border-b font-semibold">E-posta</th>
+                    <th class="p-3 border-b font-semibold">Telefon</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                {% for employee in page_obj %}
+                <tr class="hover:bg-gray-50 transition border-b">
+                    <!-- Ad -->
+                    <td class="p-3 text-gray-700 font-normal">
+                        {{ employee.first_name|default:"-" }}
+                    </td>
+                    
+                    <!-- Soyad -->
+                    <td class="p-3 text-gray-700 font-normal">
+                        {{ employee.last_name|default:"-" }}
+                    </td>
+
+                    <!-- Kısa İsim -->
+                    <td class="p-3 text-gray-700 font-normal">
+                        {{ employee.short_name|default:"-" }}
+                    </td>
+
+                    <!-- Departman -->
+                    <td class="p-3 text-gray-700 font-normal">
+                        {{ employee.department|default:"-" }}
+                    </td>
+                    
+                    <!-- E-posta -->
+                    <td class="p-3 text-gray-700 font-normal">
+                        {% if employee.email %}
+                            <a href="mailto:{{ employee.email }}" class="hover:underline text-gray-700">{{ employee.email }}</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Telefon -->
+                    <td class="p-3 text-gray-700 font-normal">
+                        {{ employee.phone_number|default:"-" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="p-4 text-gray-500 text-center font-normal">Henüz personel kaydı bulunmamaktadır.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Sayfalama -->
+    <div class="mt-6 flex justify-between items-center text-sm">
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_dep %}&department={{ selected_dep }}{% endif %}" 
+                   class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">&larr; Önceki</a>
+            {% else %}
+                <span class="bg-gray-300 text-gray-500 px-4 py-2 rounded cursor-not-allowed">&larr; Önceki</span>
+            {% endif %}
+        </div>
+
+        <span class="font-normal text-gray-600">
+            Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+        </span>
+
+        <div>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_dep %}&department={{ selected_dep }}{% endif %}" 
+                   class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">Sonraki &rarr;</a>
+            {% else %}
+                <span class="bg-gray-300 text-gray-500 px-4 py-2 rounded cursor-not-allowed">Sonraki &rarr;</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

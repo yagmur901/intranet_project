@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal İntranet</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome İkonları -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Açılır Menü Animasyonları */
+        .dropdown-menu {
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            transform-origin: top right;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+        }
+        .dropdown-trigger:hover .dropdown-menu,
+        .dropdown-trigger:focus-within .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+        
+        .app-launcher {
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            transform-origin: top left;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+        }
+        .app-launcher-trigger:hover .app-launcher,
+        .app-launcher-trigger:focus-within .app-launcher {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    
+    <!-- Ana üst menü -->
+    <nav class="bg-red-800 text-white shadow-md relative z-50">
+        <div class="px-4 flex h-14 items-center justify-between">
+            
+            <!-- Uygulama Başlatıcı ve Logo -->
+            <div class="flex items-center gap-4">
+                <div class="app-launcher-trigger relative h-full flex items-center group cursor-pointer py-2">
+                    <div class="p-2 rounded hover:bg-white/20 transition-colors">
+                        <svg class="w-6 h-6 text-red-100 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="6" cy="6" r="2"></circle><circle cx="12" cy="6" r="2"></circle><circle cx="18" cy="6" r="2"></circle>
+                            <circle cx="6" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="18" cy="12" r="2"></circle>
+                            <circle cx="6" cy="18" r="2"></circle><circle cx="12" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle>
+                        </svg>
+                    </div>
+                    
+                    <div class="app-launcher absolute top-full left-0 mt-1 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden text-gray-800 z-50 cursor-default">
+                        <div class="p-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                            <span class="font-bold text-sm">Uygulamalar</span>
+                        </div>
+                        <div class="p-4 grid grid-cols-3 gap-4">
+                            <a href="/" class="flex flex-col items-center gap-2 group p-2 rounded hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white shadow-sm transition">
+                                    <i class="fa-solid fa-house text-lg"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-center">Pano</span>
+                            </a>
+
+                            {% if dashboard_settings.show_documents %}
+                            <a href="{% url 'document_list' %}" class="flex flex-col items-center gap-2 group p-2 rounded hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white shadow-sm transition">
+                                    <i class="fa-solid fa-folder-open text-lg"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-center">Dokümanlar</span>
+                            </a>
+                            {% endif %}
+
+                            {% if dashboard_settings.show_employees %}
+                            <a href="/employees" class="flex flex-col items-center gap-2 group p-2 rounded hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white shadow-sm transition">
+                                    <i class="fa-solid fa-users text-lg"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-center">Rehber</span>
+                            </a>
+                            {% endif %}
+
+                            {% if dashboard_settings.show_calendar %}
+                            <a href="{% url 'event_calendar' %}" class="flex flex-col items-center gap-2 group p-2 rounded hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white shadow-sm transition">
+                                    <i class="fa-solid fa-calendar-days text-lg"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-center">Takvim</span>
+                            </a>
+                            {% endif %}
+
+                            {% if dashboard_settings.show_workspaces %}
+                            <a href="{% url 'workspace_list' %}" class="flex flex-col items-center gap-2 group p-2 rounded hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white shadow-sm transition">
+                                    <i class="fa-solid fa-briefcase text-lg"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-center">Çalışma Alanı</span>
+                            </a>
+                            {% endif %}
+
+                            {% if dashboard_settings.show_tickets %}
+                            <a href="/tickets/" class="flex flex-col items-center gap-2 group p-2 rounded hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white shadow-sm transition">
+                                    <i class="fa-solid fa-headset text-lg"></i>
+                                </div>
+                                <span class="text-[11px] font-semibold text-center">IT Destek</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <a href="/" class="font-bold text-lg tracking-wide hidden sm:block">Kurumsal Portal</a>
+            </div>
+            
+            <!-- Global Arama Çubuğu (Canlı Arama) -->
+            <div class="flex-1 max-w-2xl px-6 mx-auto hidden md:block relative">
+                <form action="/search/" method="GET" class="relative group m-0">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-300 group-focus-within:text-red-800 text-sm"></i>
+                    </div>
+                    <input type="text" name="q" id="live-search-input" value="{{ request.GET.q }}" autocomplete="off"
+                           class="block w-full pl-10 pr-3 py-2 bg-white/10 border border-transparent rounded-lg leading-5 text-gray-100 placeholder-red-200 focus:outline-none focus:bg-white focus:text-gray-900 focus:border-red-300 focus:ring-2 focus:ring-red-200 sm:text-sm transition-all duration-200" 
+                           placeholder="Portalda, kişilerde veya dokümanlarda ara...">
+                </form>
+
+                <!-- Canlı Arama Sonuçları Kutusu -->
+                <div id="search-dropdown" class="absolute left-6 right-6 top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50 hidden">
+                    <!-- JS sonuçları buraya -->
+                </div>
+            </div>
+
+            <!-- Bildirimler & Profil -->
+            <div class="flex items-center gap-2">
+                
+                <!-- Bildirim Çanı ve Menüsü -->
+                {% if request.user.is_authenticated %}
+                <div class="dropdown-trigger relative h-full flex items-center cursor-pointer py-2">
+                    <button class="relative p-2 rounded-full hover:bg-white/20 text-red-100 hover:text-white transition-colors focus:outline-none">
+                        <i class="fa-regular fa-bell text-lg"></i>
+                        {% if unread_notifications_count > 0 %}
+                            <span class="absolute top-1 right-1 flex items-center justify-center min-w-[16px] h-4 px-1 text-[10px] font-bold text-red-800 bg-yellow-400 rounded-full border border-red-800 animate-pulse">
+                                {{ unread_notifications_count }}
+                            </span>
+                        {% endif %}
+                    </button>
+
+                    <div class="dropdown-menu absolute right-0 top-full mt-1 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden text-gray-800 z-50 cursor-default">
+                        <div class="p-3 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="text-sm font-bold text-gray-700">Bildirimler</h3>
+                            <form method="POST" action="{% url 'notifications:mark_all_as_read' %}" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="text-xs text-blue-600 hover:underline bg-transparent border-none cursor-pointer p-0">Tümünü Okundu İşaretle</button>
+                            </form>
+                        </div>
+                        
+                        <ul class="max-h-72 overflow-y-auto">
+                            {% for notification in latest_notifications %}
+                                <li class="border-b border-gray-50 hover:bg-red-50 transition">
+                                    <a href="{% url 'notifications:read_and_redirect' notification.id %}" class="block p-3">
+                                        <div class="flex justify-between items-start gap-2">
+                                            <p class="text-sm text-gray-800 {% if not notification.is_read %}font-bold{% endif %}">
+                                                {{ notification.title }}
+                                            </p>
+                                            {% if not notification.is_read %}
+                                                <span class="h-2 w-2 rounded-full bg-blue-600 mt-1.5 flex-shrink-0"></span>
+                                            {% endif %}
+                                        </div>
+                                        {% if notification.message %}
+                                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ notification.message }}</p>
+                                        {% endif %}
+                                        <p class="text-[10px] text-gray-400 mt-2">
+                                            <i class="fa-regular fa-clock mr-1"></i>{{ notification.created_at|timesince }} önce
+                                        </p>
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <li class="p-6 text-center text-sm text-gray-500 flex flex-col items-center justify-center">
+                                    <i class="fa-regular fa-bell-slash text-2xl text-gray-300 mb-2"></i>
+                                    Yeni bildiriminiz bulunmuyor.
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <div class="p-2 text-center border-t border-gray-100 bg-gray-50">
+                            <a href="{% url 'notifications:list' %}" class="text-xs font-bold text-red-600 hover:text-red-800 transition">Tüm Bildirimleri Gör &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Profil Açılır Menüsü -->
+                {% if request.user.is_authenticated %}
+                <div class="dropdown-trigger relative ml-2 h-full flex items-center cursor-pointer py-2">
+                    <button class="flex items-center gap-2 p-0.5 rounded-full hover:bg-white/20 focus:outline-none transition-colors border border-transparent hover:border-white/30">
+                        <div class="h-8 w-8 rounded-full bg-white text-red-800 flex items-center justify-center text-sm font-extrabold uppercase shadow-sm">
+                            {{ request.user.username|slice:":1" }}
+                        </div>
+                    </button>
+                    
+                    <div class="dropdown-menu absolute right-0 top-full mt-1 w-64 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden text-gray-800 z-50 cursor-default">
+                        <div class="px-4 py-4 border-b border-gray-100 flex items-center gap-3 bg-gray-50">
+                             <div class="h-12 w-12 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-extrabold uppercase text-xl shadow-sm">
+                                {{ request.user.username|slice:":1" }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">{{ request.user.username }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">Sistem Kullanıcısı</p>
+                            </div>
+                        </div>
+                        
+                        <div class="p-1">
+                            <a href="{% url 'profile' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-md transition">
+                                <i class="fa-regular fa-id-badge w-4 text-center"></i> Profilim
+                            </a>
+                            <a href="{% url 'settings' %}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 rounded-md transition">
+                                <i class="fa-solid fa-gear w-4 text-center"></i> Ayarlar
+                            </a>
+                        </div>
+                        
+                        <div class="p-1 border-t border-gray-100">
+                            <form method="POST" action="{% url 'logout' %}" class="m-0 block w-full">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 rounded-md transition cursor-pointer">
+                                    <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i> Oturumu Kapat
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- İkincil Menü -->
+        <div class="bg-white text-gray-600 border-b border-gray-200 px-4 shadow-sm hidden md:block">
+            <div class="container mx-auto flex space-x-8 text-sm font-medium">
+                {% url 'event_calendar' as event_url %}
+                {% url 'document_list' as doc_url %}
+                {% url 'workspace_list' as workspace_url %}
+
+                <a href="/" class="py-3 border-b-2 transition-colors {% if request.path == '/' %}border-red-700 text-red-700 font-semibold{% else %}border-transparent hover:border-gray-300 hover:text-gray-900{% endif %}">
+                    Anasayfa
+                </a>
+
+                {% if dashboard_settings.show_employees %}
+                <a href="/employees" class="py-3 border-b-2 transition-colors {% if '/employees' in request.path %}border-red-700 text-red-700 font-semibold{% else %}border-transparent hover:border-gray-300 hover:text-gray-900{% endif %}">
+                    Personel Rehberi
+                </a>
+                {% endif %}
+
+                {% if dashboard_settings.show_calendar %}
+                <a href="{{ event_url }}" class="py-3 border-b-2 transition-colors {% if request.path == event_url or '/event' in request.path %}border-red-700 text-red-700 font-semibold{% else %}border-transparent hover:border-gray-300 hover:text-gray-900{% endif %}">
+                    Etkinlik Takvimi
+                </a>
+                {% endif %}
+
+                {% if dashboard_settings.show_documents %}
+                <a href="{{ doc_url }}" class="py-3 border-b-2 transition-colors {% if request.path == doc_url or '/document' in request.path %}border-red-700 text-red-700 font-semibold{% else %}border-transparent hover:border-gray-300 hover:text-gray-900{% endif %}">
+                    Doküman Merkezi
+                </a>
+                {% endif %}
+
+                {% if dashboard_settings.show_workspaces %}
+                <a href="{{ workspace_url }}" class="py-3 border-b-2 transition-colors {% if request.path == workspace_url or '/workspace' in request.path %}border-red-700 text-red-700 font-semibold{% else %}border-transparent hover:border-gray-300 hover:text-gray-900{% endif %}">
+                    Çalışma Alanı
+                </a>
+                {% endif %}
+
+                {% if dashboard_settings.show_tickets %}
+                <a href="/tickets/" class="py-3 border-b-2 transition-colors {% if '/tickets' in request.path %}border-red-700 text-red-700 font-semibold{% else %}border-transparent hover:border-gray-300 hover:text-gray-900{% endif %}">
+                    IT Destek
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sistem Uyarıları -->
+    {% if messages %}
+    <div class="container mx-auto mt-4 px-4 space-y-2">
+        {% for message in messages %}
+        <div class="p-4 rounded-xl border flex items-center justify-between shadow-sm
+            {% if message.tags == 'warning' %}bg-amber-50 border-amber-200 text-amber-800
+            {% elif message.tags == 'error' %}bg-red-50 border-red-200 text-red-800
+            {% else %}bg-green-50 border-green-200 text-green-800{% endif %}">
+            <div class="flex items-center gap-3 text-sm font-medium">
+                <i class="fa-solid {% if message.tags == 'warning' %}fa-triangle-exclamation text-amber-500{% elif message.tags == 'error' %}fa-circle-exclamation text-red-500{% else %}fa-circle-check text-green-500{% endif %} text-lg"></i>
+                <span>{{ message }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Dinamik İçerik Alanı -->
+    <main class="container mx-auto mt-6 mb-12 flex-grow px-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Alt Bilgi -->
+    <footer class="bg-white border-t border-gray-200 text-gray-500 text-center py-6 mt-auto shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-4 text-xs font-medium">
+            <p>&copy; 2026 İç Ağ Yönetim Sistemi</p>
+            <div class="flex gap-6 mt-3 md:mt-0">
+                <a href="javascript:void(0)" class="hover:text-red-700 transition opacity-70 cursor-default">Gizlilik Politikası</a>
+                <a href="javascript:void(0)" class="hover:text-red-700 transition opacity-70 cursor-default">Kullanım Koşulları</a>
+                <a href="javascript:void(0)" class="hover:text-red-700 transition opacity-70 cursor-default">Sistem Yardımı</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Canlı Arama Motoru Script -->
+    <script>
+        const searchInput = document.getElementById('live-search-input');
+        const searchDropdown = document.getElementById('search-dropdown');
+
+        if(searchInput) {
+            searchInput.addEventListener('input', async function() {
+                const query = this.value.trim();
+                
+                if (query.length < 2) {
+                    searchDropdown.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/search/?q=${query}`);
+                    const data = await response.json();
+                    
+                    if (data.length > 0) {
+                        searchDropdown.innerHTML = data.map(item => `
+                            <a href="${item.url}" class="flex items-center gap-3 px-4 py-3 hover:bg-red-50 border-b border-gray-50 transition cursor-pointer">
+                                <div class="h-9 w-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid ${item.icon}"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p class="text-sm font-bold text-gray-900 truncate">${item.title}</p>
+                                    <p class="text-[11px] text-gray-500 truncate">${item.type} &rarr; ${item.subtitle}</p>
+                                </div>
+                            </a>
+                        `).join('');
+                        searchDropdown.classList.remove('hidden');
+                    } else {
+                        searchDropdown.innerHTML = `<div class="p-4 text-sm text-gray-500 text-center font-medium">"${query}" için sonuç bulunamadı.</div>`;
+                        searchDropdown.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("Arama servisi yanıt vermiyor:", error);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === "Escape") searchDropdown.classList.add('hidden');
+            });
+        }
+    </script>
+</body>
+</html>
